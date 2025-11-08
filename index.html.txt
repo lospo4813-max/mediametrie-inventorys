@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#E30613">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Médiamétrie Inventory Pro</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F5F5F5;
+            overflow-x: hidden;
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* =========================
+           ÉCRAN DE CONFIGURATION
+        ========================= */
+        .setup-screen {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&h=1080&fit=crop') center/cover;
+        }
+
+        .setup-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .setup-box {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 24px rgba(227, 6, 19, 0.4);
+            position: relative;
+        }
+
+        .logo-m {
+            font-size: 70px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .logo-arrow {
+            position: absolute;
+            bottom: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid #FF6B35;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .config-label {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #DDD;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #E30613;
+        }
+
+        .btn-start {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 24px;
+            box-shadow: 0 4px 12px rgba(227, 6, 19, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn-start:active {
+            transform: scale(0.98);
+        }
+
+        .btn-start:disabled {
+            background: #CCC;
+            cursor: not-allowed;
+        }
+
+        .tuto-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #DDD;
+        }
+
+        .tuto-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .tuto-list {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .tuto-list li {
+            margin-bottom: 6px;
+        }
+
+        /* =========================
+           ÉCRAN PRINCIPAL
+        ========================= */
+        .header {
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            padding: 20px;
+            padding-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo-box {
+            width: 56px;
+            height: 56px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-logo-m {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .header-version {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-badge {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .menu-dropdown {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+
+        .menu-dropdown.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #F9F9F9;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .menu-text {
+            flex: 1;
+        }
+
+        .menu-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .menu-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .categories-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid;
+        }
+
+        .category-card:active {
+            transform: scale(0.98);
+        }
+
+        .category-card.accessories { border-left-color: #3B82F6; }
+        .category-card.tvm3 { border-left-color: #8B5CF6; }
+        .category-card.streaming { border-left-color: #10B981; }
+
+        .category-icon {
+            font-size: 48px;
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stats-grid {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 16px;
+        }
+
+        .stats-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid;
+        }
+
+        .stat-box.red {
+            background: #FEF2F2;
+            border-color: #FECACA;
+        }
+
+        .stat-box.green {
+            background: #F0FDF4;
+            border-color: #BBF7D0;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-box.red .stat-number { color: #E30613; }
+        .stat-box.green .stat-number { color: #10B981; }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .btn-sync {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(227, 6, 19, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* =========================
+           ÉCRAN SCANNER
+        ========================= */
+        .scanner-header {
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            padding: 20px;
+            padding-top: 40px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scanner-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .scanner-title-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .scanner-category-icon {
+            font-size: 40px;
+        }
+
+        .scanner-category-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .scanner-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .item-count-badge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .scanner-zone {
+            background: white;
+            margin: 20px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .scan-frame {
+            border: 4px dashed #E30613;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #FEF2F2, #FFF);
+        }
+
+        .scan-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .scan-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .scan-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn-simulate {
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(227, 6, 19, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scanned-item {
+            background: white;
+            margin: 20px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #10B981;
+        }
+
+        .scanned-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .item-image {
+            width: 96px;
+            height: 96px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #E5E7EB;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .item-ref {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .item-kinet {
+            display: inline-block;
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .item-code {
+            display: inline-block;
+            background: #F3F4F6;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .check-icon {
+            color: #10B981;
+            font-size: 32px;
+        }
+
+        .quantity-input-group {
+            margin-bottom: 16px;
+        }
+
+        .quantity-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .quantity-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: #10B981;
+        }
+
+        .btn-validate {
+            width: 100%;
+            padding: 16px;
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-validate:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+        }
+
+        .inventory-list {
+            margin: 20px;
+        }
+
+        .inventory-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inventory-items {
+            display: grid;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .inventory-item {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border-left: 3px solid #E30613;
+        }
+
+        .item-left {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .item-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #E5E7EB;
+        }
+
+        .item-info-mini h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .item-info-mini p {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .item-qty {
+            font-size: 20px;
+            font-weight: bold;
+            color: #E30613;
+        }
+
+        .action-buttons {
+            margin: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .btn-export {
+            width: 100%;
+            padding: 16px;
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-email {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-back-main {
+            width: 100%;
+            padding: 16px;
+            background: #6B7280;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .email-inputs {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .email-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #E30613;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #FEF2F2, #FFF);
+            border: 2px solid #FCA5A5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #E30613;
+            margin-bottom: 12px;
+        }
+
+        .summary-line {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-buttons {
+            display: grid;
+            gap: 12px;
+        }
+
+        .btn-send {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #E30613, #FF6B35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-send:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel-modal {
+            width: 100%;
+            padding: 16px;
+            background: #E5E7EB;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* =========================
+           HISTORIQUE
+        ========================= */
+        .history-list {
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #E30613;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .history-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .history-icon {
+            font-size: 32px;
+        }
+
+        .history-id {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .history-category {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .history-count {
+            font-size: 18px;
+            font-weight: bold;
+            color: #E30613;
+        }
+
+        .history-badge {
+            display: inline-block;
+            background: #D1FAE5;
+            color: #065F46;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .history-footer {
+            display: flex;
+            gap: 16px;
+            font-size: 11px;
+            color: #666;
+            padding-top: 12px;
+            border-top: 1px solid #F3F4F6;
+        }
+
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- =============================
+     ÉCRAN DE CONFIGURATION
+============================= -->
+<div id="setupScreen" class="screen active">
+    <div class="setup-screen">
+        <div class="setup-box">
+            <div class="logo-container">
+                <div class="logo-m">M</div>
+                <div class="logo-arrow"></div>
+            </div>
+            
+            <h1 class="title">Médiamétrie</h1>
+            <div class="subtitle">INVENTAIRE PRO</div>
+            <div class="config-label">Configuration du profil opérateur</div>
+            
+            <div class="input-group">
+                <label class="input-label">Nom *</label>
+                <input type="text" id="inputName" class="input" placeholder="Dupont" autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Identifiant *</label>
+                <input type="text" id="inputId" class="input" placeholder="MED001" autocomplete="off">
+            </div>
+            
+            <button class="btn-start" id="btnStart" onclick="startApp()">Commencer</button>
+            
+            <div class="tuto-section">
+                <div class="tuto-title">TUTO RAPIDE:</div>
+                <ul class="tuto-list">
+                    <li>• Entrez votre NOM et votre IDENTIFIANT pour valider votre profil.</li>
+                    <li>• Appuyez sur COMMENCER pour accéder au menu général.</li>
+                    <li>• Dans le menu, choisissez:</li>
+                    <li style="margin-left:20px;">- Accessoires → pour inventaire des accessoires</li>
+                    <li style="margin-left:20px;">- TVM3 → pour inventaire des TVM3 en possession</li>
+                    <li style="margin-left:20px;">- Streaming Meter → pour signaler des Streaming Meters</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =============================
+     ÉCRAN PRINCIPAL
+============================= -->
+<div id="mainScreen" class="screen">
+    <div class="header">
+        <div class="header-top">
+            <div class="header-logo">
+                <div class="header-logo-box">
+                    <div class="header-logo-m">M</div>
+                </div>
+                <div>
+                    <div class="header-title">Médiamétrie Inventory</div>
+                    <div class="header-version">Manager Pro v2.0</div>
+                </div>
+            </div>
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        </div>
+        <div class="user-badge">
+            <div class="user-name" id="userName"></div>
+            <div class="user-id" id="userId"></div>
+        </div>
+    </div>
+    
+    <div class="menu-dropdown" id="menuDropdown">
+        <div class="menu-item" onclick="syncData()">
+            <div class="menu-icon">🔄</div>
+            <div class="menu-text">
+                <div class="menu-title">Synchroniser</div>
+                <div class="menu-subtitle" id="lastSync">Jamais synchronisé</div>
+            </div>
+        </div>
+        <div class="menu-item" onclick="showHistory()">
+            <div class="menu-icon">📋</div>
+            <div class="menu-text">
+                <div class="menu-title">Historique</div>
+                <div class="menu-subtitle" id="historyCount">0 inventaires</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="section-title">SÉLECTIONNEZ UNE CATÉGORIE</div>
+        
+        <div class="categories-grid">
+            <div class="category-card accessories" onclick="startScan('accessoires', 'Accessoires', '🔌')">
+                <div class="category-icon">🔌</div>
+                <div class="category-info">
+                    <div class="category-name">Accessoires</div>
+                </div>
+            </div>
+            
+            <div class="category-card tvm3" onclick="startScan('tvm3', 'TVM3', '📱')">
+                <div class="category-icon">📱</div>
+                <div class="category-info">
+                    <div class="category-name">TVM3</div>
+                </div>
+            </div>
+            
+            <div class="category-card streaming" onclick="startScan('streaming', 'Streaming Meters', '📡')">
+                <div class="category-icon">📡</div>
+                <div class="category-info">
+                    <div class="category-name">Streaming Meters</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stats-title">Aperçu rapide</div>
+            <div class="stats-row">
+                <div class="stat-box red">
+                    <div class="stat-number" id="totalInventories">0</div>
+                    <div class="stat-label">Inventaires totaux</div>
+                </div>
+                <div class="stat-box green">
+                    <div class="stat-number" id="sentInventories">0</div>
+                    <div class="stat-label">Envoyés avec succès</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn-sync" onclick="syncData()">
+            <span>🔄</span>
+            <span>Synchroniser</span>
+        </button>
+    </div>
+</div>
+
+<!-- =============================
+     ÉCRAN SCANNER
+============================= -->
+<div id="scanScreen" class="screen">
+    <div class="scanner-header">
+        <button class="back-btn" onclick="backToMain()">
+            <span>←</span>
+            <span>Retour aux catégories</span>
+        </button>
+        
+        <div class="scanner-title-row">
+            <div class="scanner-title-left">
+                <div class="scanner-category-icon" id="scanIcon"></div>
+                <div>
+                    <div class="scanner-category-name" id="scanTitle"></div>
+                    <div class="scanner-subtitle">Scan en cours</div>
+                </div>
+            </div>
+            <div class="item-count-badge" id="itemCount">0 items</div>
+        </div>
+    </div>
+    
+    <div class="scanner-zone">
+        <div class="scan-frame">
+            <div class="scan-icon">📷</div>
+            <div class="scan-title">Scanner un code-barres</div>
+            <div class="scan-subtitle">Positionnez le code devant la caméra</div>
+            <button class="btn-simulate" onclick="simulateScan()">
+                <span>📷</span>
+                <span>Simuler un scan</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="scannedItemZone" style="display:none;">
+        <div class="scanned-item">
+            <div class="scanned-header">
+                <img id="itemImage" class="item-image" src="" alt="">
+                <div class="item-details">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <div>
+                            <div class="item-name" id="itemName"></div>
+                            <div class="item-ref" id="itemRef"></div>
+                            <div id="itemKinetZone"></div>
+                        </div>
+                        <div class="check-icon">✓</div>
+                    </div>
+                    <div class="item-code" id="itemCode"></div>
+                </div>
+            </div>
+            
+            <div class="quantity-input-group">
+                <label class="quantity-label">Quantité inventoriée *</label>
+                <input type="number" id="quantityInput" class="quantity-input" placeholder="0" min="1">
+            </div>
+            
+            <button class="btn-validate" id="btnValidate" onclick="validateItem()">
+                <span>✓</span>
+                <span>Valider et continuer</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="inventoryListZone" style="display:none;">
+        <div class="inventory-list">
+            <div class="inventory-title">
+                <span>📦</span>
+                <span>Articles scannés (<span id="inventoryCount">0</span>)</span>
+            </div>
+            <div class="inventory-items" id="inventoryItems"></div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-export" onclick="exportCSV()">
+                <span>📥</span>
+                <span>Exporter l'inventaire</span>
+            </button>
+            <button class="btn-email" onclick="showEmailModal()">
+                <span>📧</span>
+                <span>Envoyer par email</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <button class="btn-back-main" onclick="backToMain()">← Retour au menu</button>
+    </div>
+</div>
+
+<!-- =============================
+     ÉCRAN HISTORIQUE
+============================= -->
+<div id="historyScreen" class="screen">
+    <div class="scanner-header">
+        <button class="back-btn" onclick="showScreen('mainScreen')">
+            <span>←</span>
+            <span>Retour</span>
+        </button>
+        
+        <div class="scanner-title-row">
+            <div class="scanner-title-left">
+                <div class="scanner-category-icon">📋</div>
+                <div>
+                    <div class="scanner-category-name">Historique</div>
+                    <div class="scanner-subtitle">Tous vos inventaires</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="history-list" id="historyList"></div>
+</div>
+
+<!-- =============================
+     MODAL EMAIL
+============================= -->
+<div id="emailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Envoyer l'inventaire</div>
+        
+        <div class="email-inputs">
+            <div>
+                <label class="email-label">📧 Destinataire 1 *</label>
+                <input type="email" id="email1" class="email-input" placeholder="email@mediametrie.fr">
+            </div>
+            <div>
+                <label class="email-label">📧 Destinataire 2 (optionnel)</label>
+                <input type="email" id="email2" class="email-input" placeholder="email@mediametrie.fr">
+            </div>
+            <div>
+                <label class="email-label">📧 Destinataire 3 (optionnel)</label>
+                <input type="email" id="email3" class="email-input" placeholder="email@mediametrie.fr">
+            </div>
+        </div>
+        
+        <div class="summary-box">
+            <div class="summary-title">Récapitulatif :</div>
+            <div class="summary-line">
+                <span id="summaryIcon"></span>
+                <span id="summaryText"></span>
+            </div>
+            <div class="summary-line">Opérateur : <span id="summaryOperator"></span></div>
+            <div class="summary-line">ID : <span id="summaryId"></span></div>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn-send" id="btnSend" onclick="sendEmails()">Envoyer maintenant</button>
+            <button class="btn-cancel-modal" onclick="closeEmailModal()">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===========================
+// BASE DE DONNÉES PRODUITS
+// ===========================
+const PRODUCTS_DB = {
+    accessoires: {
+        'ACC001': { 
+            name: 'Câble HDMI 2.0 - 2m', 
+            ref: 'HDMI-2M-001', 
+            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+            kinet: null 
+        },
+        'ACC002': { 
+            name: 'Câble Optique Toslink 1.5m', 
+            ref: 'OPT-1.5M-002', 
+            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+            kinet: null 
+        },
+        'ACC003': { 
+            name: 'Répéteur Wi-Fi AC1200', 
+            ref: 'WIFI-AC12-003', 
+            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+            kinet: null 
+        },
+    },
+    tvm3: {
+        'TVM001': { 
+            name: 'TVM3 Boîtier Standard', 
+            ref: 'TVM3-STD-001', 
+            image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
+            kinet: 'K-TVM-2024-1234' 
+        },
+        'TVM002': { 
+            name: 'TVM3 Boîtier Premium', 
+            ref: 'TVM3-PRE-002', 
+            image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop',
+            kinet: 'K-TVM-2024-5678' 
+        },
+    },
+    streaming: {
+        'STR001': { 
+            name: 'Streaming Meter Box Standard', 
+            ref: 'SM-STD-001', 
+            image: 'https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=400&h=400&fit=crop',
+            kinet: 'K-SM-2024-3456' 
+        },
+        'STR002': { 
+            name: 'Streaming Meter Box Pro', 
+            ref: 'SM-PRO-002', 
+            image: 'https://images.unsplash.com/photo-1562832135-14a35d25edef?w=400&h=400&fit=crop',
+            kinet: 'K-SM-2024-7890' 
+        },
+    }
+};
+
+// ===========================
+// VARIABLES GLOBALES
+// ===========================
+let userData = {};
+let currentCategory = '';
+let currentCategoryName = '';
+let currentCategoryIcon = '';
+let inventory = [];
+let inventoryHistory = [];
+let currentScannedItem = null;
+
+// ===========================
+// GESTION DES ÉCRANS
+// ===========================
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+}
+
+// ===========================
+// ÉCRAN CONFIGURATION
+// ===========================
+function startApp() {
+    const name = document.getElementById('inputName').value.trim();
+    const id = document.getElementById('inputId').value.trim().toUpperCase();
+    
+    if (!name || !id) {
+        alert('❌ Veuillez remplir tous les champs');
+        return;
+    }
+    
+    userData = { name, id };
+    localStorage.setItem('mediametrie_user', JSON.stringify(userData));
+    
+    document.getElementById('userName').textContent = name;
+    document.getElementById('userId').textContent = `ID: ${id}`;
+    
+    loadHistory();
+    showScreen('mainScreen');
+}
+
+// ===========================
+// MENU DROPDOWN
+// ===========================
+function toggleMenu() {
+    document.getElementById('menuDropdown').classList.toggle('active');
+}
+
+// ===========================
+// SYNCHRONISATION
+// ===========================
+function syncData() {
+    const now = new Date().toLocaleString('fr-FR');
+    document.getElementById('lastSync').textContent = `Dernière sync: ${now}`;
+    localStorage.setItem('mediametrie_last_sync', now);
+    playBeep();
+    alert('✅ Synchronisation réussie !\n\nBase de données mise à jour.');
+    toggleMenu();
+}
+
+// ===========================
+// DÉMARRER SCAN
+// ===========================
+function startScan(category, categoryName, icon) {
+    currentCategory = category;
+    currentCategoryName = categoryName;
+    currentCategoryIcon = icon;
+    inventory = [];
+    
+    document.getElementById('scanTitle').textContent = categoryName;
+    document.getElementById('scanIcon').textContent = icon;
+    updateItemCount();
+    
+    showScreen('scanScreen');
+}
+
+// ===========================
+// SIMULER SCAN
+// ===========================
+function simulateScan() {
+    const products = PRODUCTS_DB[currentCategory];
+    const codes = Object.keys(products);
+    const randomCode = codes[Math.floor(Math.random() * codes.length)];
+    const product = products[randomCode];
+    
+    currentScannedItem = {
+        code: randomCode,
+        ...product
+    };
+    
+    displayScannedItem();
+    playBeep();
+}
+
+// ===========================
+// AFFICHER ARTICLE SCANNÉ
+// ===========================
+function displayScannedItem() {
+    document.getElementById('scannedItemZone').style.display = 'block';
+    document.getElementById('itemImage').src = currentScannedItem.image;
+    document.getElementById('itemName').textContent = currentScannedItem.name;
+    document.getElementById('itemRef').textContent = `Réf: ${currentScannedItem.ref}`;
+    document.getElementById('itemCode').textContent = `Code: ${currentScannedItem.code}`;
+    
+    const kinetZone = document.getElementById('itemKinetZone');
+    if (currentScannedItem.kinet) {
+        kinetZone.innerHTML = `<div class="item-kinet">Kinet: ${currentScannedItem.kinet}</div>`;
+    } else {
+        kinetZone.innerHTML = '';
+    }
+    
+    document.getElementById('quantityInput').value = '';
+    document.getElementById('quantityInput').focus();
+}
+
+// ===========================
+// VALIDER ARTICLE
+// ===========================
+function validateItem() {
+    const quantity = parseInt(document.getElementById('quantityInput').value);
+    
+    if (!quantity || quantity <= 0) {
+        alert('❌ Veuillez entrer une quantité valide');
+        return;
+    }
+    
+    inventory.push({
+        ...currentScannedItem,
+        quantity,
+        timestamp: new Date().toLocaleString('fr-FR')
+    });
+    
+    document.getElementById('scannedItemZone').style.display = 'none';
+    currentScannedItem = null;
+    
+    updateInventoryList();
+    updateItemCount();
+    playBeep();
+}
+
+// ===========================
+// MISE À JOUR LISTE
+// ===========================
+function updateInventoryList() {
+    const zone = document.getElementById('inventoryListZone');
+    const itemsContainer = document.getElementById('inventoryItems');
+    
+    if (inventory.length === 0) {
+        zone.style.display = 'none';
+        return;
+    }
+    
+    zone.style.display = 'block';
+    document.getElementById('inventoryCount').textContent = inventory.length;
+    
+    itemsContainer.innerHTML = inventory.map(item => `
+        <div class="inventory-item">
+            <div class="item-left">
+                <img src="${item.image}" class="item-thumb" alt="${item.name}">
+                <div class="item-info-mini">
+                    <h4>${item.name}</h4>
+                    <p>${item.ref} • ${item.timestamp}</p>
+                    ${item.kinet ? `<p style="color:#1E40AF; font-weight:600;">Kinet: ${item.kinet}</p>` : ''}
+                </div>
+            </div>
+            <div class="item-qty">×${item.quantity}</div>
+        </div>
+    `).join('');
+}
+
+// ===========================
+// MISE À JOUR COMPTEUR
+// ===========================
+function updateItemCount() {
+    document.getElementById('itemCount').textContent = `${inventory.length} items`;
+}
+
+// ===========================
+// RETOUR MENU PRINCIPAL
+// ===========================
+function backToMain() {
+    showScreen('mainScreen');
+}
+
+// ===========================
+// EXPORT CSV
+// ===========================
+function exportCSV() {
+    const header = 'Catégorie,Référence,Nom Article,Quantité,Kinet,Date/Heure,Opérateur ID,Opérateur\n';
+    const rows = inventory.map(item => 
+        `"${currentCategoryName}","${item.ref}","${item.name}",${item.quantity},"${item.kinet || 'N/A'}","${item.timestamp}","${userData.id}","${userData.name}"`
+    ).join('\n');
+    
+    const csv = '\ufeff' + header + rows;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inventaire_${currentCategory}_${userData.id}_${Date.now()}.csv`;
+    a.click();
+    
+    alert('✅ Export CSV réussi !');
+}
+
+// ===========================
+// MODAL EMAIL
+// ===========================
+function showEmailModal() {
+    document.getElementById('summaryIcon').textContent = currentCategoryIcon;
+    document.getElementById('summaryText').textContent = `${currentCategoryName} - ${inventory.length} articles`;
+    document.getElementById('summaryOperator').textContent = userData.name;
+    document.getElementById('summaryId').textContent = userData.id;
+    
+    document.getElementById('emailModal').classList.add('active');
+}
+
+function closeEmailModal() {
+    document.getElementById('emailModal').classList.remove('active');
+}
+
+function sendEmails() {
+    const email1 = document.getElementById('email1').value.trim();
+    const email2 = document.getElementById('email2').value.trim();
+    const email3 = document.getElementById('email3').value.trim();
+    
+    if (!email1 || !email1.includes('@')) {
+        alert('❌ Veuillez entrer au moins un email valide');
+        return;
+    }
+    
+    const emails = [email1, email2, email3].filter(e => e && e.includes('@'));
+    
+    // Sauvegarder dans l'historique
+    const historyItem = {
+        id: `INV-${Date.now()}`,
+        date: new Date().toLocaleString('fr-FR'),
+        category: currentCategory,
+        categoryName: currentCategoryName,
+        categoryIcon: currentCategoryIcon,
+        itemCount: inventory.length,
+        operator: userData.name,
+        sent: true
+    };
+    
+    inventoryHistory.unshift(historyItem);
+    saveHistory();
+    
+    alert(`✅ Inventaire envoyé avec succès à:\n${emails.join('\n')}`);
+    
+    closeEmailModal();
+    inventory = [];
+    showScreen('mainScreen');
+    loadHistory();
+}
+
+// ===========================
+// HISTORIQUE
+// ===========================
+function loadHistory() {
+    const saved = localStorage.getItem('mediametrie_history');
+    if (saved) {
+        inventoryHistory = JSON.parse(saved);
+    }
+    
+    document.getElementById('totalInventories').textContent = inventoryHistory.length;
+    document.getElementById('sentInventories').textContent = inventoryHistory.filter(h => h.sent).length;
+    document.getElementById('historyCount').textContent = `${inventoryHistory.length} inventaires`;
+}
+
+function saveHistory() {
+    localStorage.setItem('mediametrie_history', JSON.stringify(inventoryHistory));
+}
+
+function showHistory() {
+    toggleMenu();
+    showScreen('historyScreen');
+    displayHistory();
+}
+
+function displayHistory() {
+    const listEl = document.getElementById('historyList');
+    
+    if (inventoryHistory.length === 0) {
+        listEl.innerHTML = `
+            <div style="text-align:center; padding:60px 20px;">
+                <div style="font-size:64px; margin-bottom:16px;">📋</div>
+                <div style="color:#666; font-size:16px;">Aucun inventaire pour le moment</div>
+            </div>
+        `;
+        return;
+    }
+    
+    listEl.innerHTML = inventoryHistory.map(item => `
+        <div class="history-item">
+            <div class="history-header">
+                <div class="history-left">
+                    <div class="history-icon">${item.categoryIcon}</div>
+                    <div>
+                        <div class="history-id">${item.id}</div>
+                        <div class="history-category">${item.categoryName}</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="history-count">${item.itemCount} items</div>
+                    ${item.sent ? '<div class="history-badge">✓ Envoyé</div>' : ''}
+                </div>
+            </div>
+            <div class="history-footer">
+                <div class="history-meta">
+                    <span>📅</span>
+                    <span>${item.date}</span>
+                </div>
+                <div class="history-meta">
+                    <span>👤</span>
+                    <span>${item.operator}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===========================
+// BIP SONORE
+// ===========================
+function playBeep() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.15);
+    } catch (error) {
+        console.log('Beep error:', error);
+    }
+}
+
+// ===========================
+// INITIALISATION
+// ===========================
+window.onload = function() {
+    const saved = localStorage.getItem('mediametrie_user');
+    if (saved) {
+        userData = JSON.parse(saved);
+        document.getElementById('inputName').value = userData.name;
+        document.getElementById('inputId').value = userData.id;
+    }
+    
+    const lastSync = localStorage.getItem('mediametrie_last_sync');
+    if (lastSync) {
+        document.getElementById('lastSync').textContent = `Dernière sync: ${lastSync}`;
+    }
+    
+    loadHistory();
+};
+</script>
+
+</body>
+</html>
